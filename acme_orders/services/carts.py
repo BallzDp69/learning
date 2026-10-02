@@ -43,7 +43,7 @@ def add_item(session: Session, cart_id: int, product_id: int, quantity: int) -> 
     if not product.is_active:
         raise ConflictError("product is inactive")
     existing = next((item for item in cart.items if item.product_id == product_id), None)
-    desired_quantity = quantity
+    desired_quantity = quantity + (existing.quantity if existing else 0)
     if product.inventory.quantity < desired_quantity:
         raise ConflictError("insufficient inventory")
     if existing:
