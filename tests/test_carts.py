@@ -22,8 +22,11 @@ def test_add_same_item_accumulates_quantity(client, user_payload, product_payloa
     cart_id, product_id = make_cart(client, user_payload, product_payload)
     assert client.post(f"/carts/{cart_id}/items", json={"product_id": product_id, "quantity": 2}).status_code == 200
     response = client.post(f"/carts/{cart_id}/items", json={"product_id": product_id, "quantity": 3})
+    assert response.status_code == 200
     assert response.json()["items"][0]["quantity"] == 5
+    assert response.json()["items"][0]["line_total_cents"] == 12500
     assert response.json()["subtotal_cents"] == 12500
+    assert client.get(f"/carts/{cart_id}").json()["items"][0]["quantity"] == 5
 
 
 def test_cannot_add_more_than_inventory(client, user_payload, product_payload):
