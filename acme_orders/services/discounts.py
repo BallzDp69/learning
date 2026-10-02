@@ -36,7 +36,7 @@ def validate_discount(discount: Discount, subtotal_cents: int) -> None:
 
 
 def get_discount_by_code(session: Session, code: str) -> Discount:
-    discount = session.query(Discount).filter(Discount.code == code.strip()).one_or_none()
+    discount = session.query(Discount).filter(Discount.code == code.strip().upper()).one_or_none()
     if discount is None:
         raise NotFoundError("discount code not found")
     return discount
